@@ -70,10 +70,7 @@ export default function Nav() {
                     />
                   </Center>
                   <br />
-                  <Center>
-                    <p>Username</p>
-                  </Center>
-                  <br />
+
                   <MenuDivider />
                   <MenuItem>Logout</MenuItem>
                 </MenuList>

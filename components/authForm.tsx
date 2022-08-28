@@ -20,7 +20,7 @@ const AuthForm = ({ mode } : any) => {
 
     const user = await auth(mode, { email, password })
     setIsLoading(false)
-    console.log(user)
+    // console.log(user)
     router.push('/')
   }
 
@@ -72,7 +72,8 @@ const AuthForm = ({ mode } : any) => {
               rightIcon={<ArrowForwardIcon />}
               sx={{
                 '&:hover': {
-                  color: 'black'
+                  color: 'gray.800',
+                  bg: 'white'
                 }
               }}
             >

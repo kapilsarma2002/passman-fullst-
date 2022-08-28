@@ -1,4 +1,5 @@
-import { Box, Flex, Table, Text, Thead, Tbody, Input, Tr, Th, Td } from '@chakra-ui/react'
+import { Link, Box, Button, Flex, Table, Text, Thead, Tbody, Input, Tr, Th, Td } from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import Nav from '../components/navBar'
 
@@ -13,6 +14,14 @@ const Home = () => {
 
       <Flex align='center' justify='space-evenly' padding='20px'>
         <Text> {arr.length} Apps and Websites</Text>
+          <Link href='/add'>
+            <Button
+              bg='green.400'
+              rightIcon={<AddIcon/ >}
+            >
+              Add
+            </Button>
+          </Link>
         <Input placeholder='Search Passwords' width='500px'></Input>
       </Flex>
 
@@ -29,7 +38,7 @@ const Home = () => {
         <Tbody>
           {
             arr.map((val, idx) => (
-              <Tr key='idx'>
+              <Tr key={idx}>
                 <Td>{idx+1}</Td>
                 <Td>name</Td>
                 <Td>email</Td>
