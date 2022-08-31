@@ -24,7 +24,7 @@ model UserInfo {
   user                  User       @relation(fields: [userId], references: [userId])
   userId                Int      
   accountName          String  
-  accoutEmail          String
+  accountEmail         String
   encryptedPassword    String
   websiteURL           String
 }

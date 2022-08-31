@@ -17,6 +17,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import Router from 'next/router';
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Link
@@ -35,12 +36,17 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  function redirectHome() {
+    Router.push('/')
+  }
+
   return (
     <>
       <Box height='100%' bg={useColorModeValue('gray.100', 'gray.900')} 
            color={useColorModeValue('black', 'white')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box>Logo</Box>
+          <Box onClick={redirectHome}>Logo</Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>

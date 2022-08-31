@@ -5,6 +5,5 @@ import fetcher from "./fetcher";
 // }
 
 export const auth = (mode: string, body: any) => {
-  // console.log(mode, body)
   return fetcher(`/${mode}`, body)
 }

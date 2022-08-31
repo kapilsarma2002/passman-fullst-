@@ -1,7 +1,6 @@
 import { Box, Flex, FormControl, FormLabel, Input, Button} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { SendData } from '../lib/addData'
 import { auth } from '../lib/mutations'
 
 const Add = () => {
@@ -42,22 +41,22 @@ const Add = () => {
           >
             <Box>
               <FormLabel>Username</FormLabel>
-              <Input type='text' onChange={(e) => setUsername(e.target.value)}></Input>
+              <Input width='500px' type='text' onChange={(e) => setUsername(e.target.value)}></Input>
             </Box>
 
             <Box>
               <FormLabel>Account Mail</FormLabel>
-              <Input type='email' onChange={(e) => setUsermail(e.target.value)}></Input>
+              <Input width='500px' type='email' onChange={(e) => setUsermail(e.target.value)}></Input>
             </Box>
 
             <Box>
               <FormLabel>Account Password</FormLabel>
-              <Input type='password' onChange={(e) => setPassword(e.target.value)}></Input>
+              <Input width='500px' type='password' onChange={(e) => setPassword(e.target.value)}></Input>
             </Box>
 
             <Box>
               <FormLabel>Application / Webiste URL</FormLabel>
-              <Input type='url' onChange={(e) => setUrl(e.target.value)}></Input>
+              <Input width='500px' type='url' onChange={(e) => setUrl(e.target.value)}></Input>
             </Box>
 
             <Button
@@ -65,6 +64,11 @@ const Add = () => {
               isLoading={isLoading}
               bg='green.400'
               color='black'
+              sx={{
+                '&:hover' : {
+                  bg: 'green.600',
+                }
+              }}
             >
               Add
             </Button>

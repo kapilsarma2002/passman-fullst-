@@ -18,9 +18,8 @@ const AuthForm = ({ mode } : any) => {
     e.preventDefault()
     setIsLoading(true)
 
-    const user = await auth(mode, { email, password })
+    await auth(mode, { email, password })
     setIsLoading(false)
-    // console.log(user)
     router.push('/')
   }
 
@@ -59,7 +58,7 @@ const AuthForm = ({ mode } : any) => {
               borderRadius='10px'
               borderColor='gray.500'
               onChange={(e) => setPassword(e.target.value)}
-            />
+              />
             
             <Button 
               type='submit' 
