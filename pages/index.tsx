@@ -19,30 +19,31 @@ import {
   ModalCloseButton,
   propNames,
 } from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
-import CryptoJS from 'crypto-js'
-import { useEffect, useState, useRef } from 'react'
-import prisma from "../lib/prisma"
-import process from "process"
+import { AddIcon, DeleteIcon, ViewIcon, EditIcon } from '@chakra-ui/icons'
+import CryptoAES from 'crypto-js/aes';
+import CryptoENC from 'crypto-js/enc-utf8';
+import { useEffect, useState } from 'react'
+import prisma from '../lib/prisma'
+import process from 'process'
+import { validateToken } from '../lib/auth'
 
 
 const Home = ({ data }: any) => {
   
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { onClose } = useDisclosure()
   const [index, setIndex] = useState(1)
   const [open, setOpen] = useState(false)
   const [info, setInfo] = useState({})
-  const { REACT_APP_SUPER_KEY } = process.env;
-  const key = REACT_APP_SUPER_KEY as string
-
+  const key = 'MySuPeRsEcReTpASsWoRd'
+  
   const handleClick = (idx: any) => {
     setIndex(idx)
     setOpen(!open)
   }
-
+  
   useEffect(() => {
     const getProps = () => {
-  
+      
       let reqRow : any = {}
       let hasChanged: boolean = false
   
@@ -52,7 +53,7 @@ const Home = ({ data }: any) => {
           hasChanged = true
           reqRow.name = val.accountName,
           reqRow.email = val.accountEmail,
-          reqRow.password = CryptoJS.AES.decrypt(val.encryptedPassword, key).toString(),
+          reqRow.password = val.encryptedPassword,
           reqRow.url = val.websiteURL
         }
       })
@@ -61,14 +62,52 @@ const Home = ({ data }: any) => {
     setInfo(getProps())
   }, [index])
 
-  // useEffect(() => {
-  //   const pass = info.password
-  //   info.password = CryptoJS.AES.decrypt(pass, key).toString()
-  // }, [info.password])
-
   const decrypt = () => {
-    
-    // console.log(pass)
+
+    // const { REACT_APP_SUPER_KEY } = process.env
+    // console.log(REACT_APP_SUPER_KEY)
+    // const key = REACT_APP_SUPER_KEY as string
+    // console.log(key)
+
+    let decryptedPassword: string
+    let pass: string
+
+    data.map((val: any, _: any) => {
+      pass = val.encryptedPassword
+      decryptedPassword =  CryptoAES.decrypt(pass, key).toString(CryptoENC)
+      val.encryptedPassword = decryptedPassword
+    })
+
+    setIndex(0)
+
+  }
+
+  const encrypt = () => {
+
+    let encryptedPass: string
+    let pass: string
+
+    data.map((val: any, _: any) => {
+      pass = val.encryptedPassword
+      encryptedPass =  CryptoAES.encrypt(pass, key).toString()
+      val.encryptedPassword = encryptedPass
+    })
+
+    setIndex(-1)
+  }
+
+  const editRow = async (idx: any) => {
+    // let user = await prisma.userInfo.findFirst({
+    //   where: {
+    //     id: idx,
+    //   }
+    // })
+
+    // console.log(user)
+  }
+
+  const deleteRow = (idx: any) => {
+
   }
 
   return (
@@ -87,14 +126,13 @@ const Home = ({ data }: any) => {
                 <Input defaultValue={info.name} />
               </Box>
               <Box width='auto' margin='20px'>
-                e-mail
+                E-mail
                 <Input defaultValue={info.email} />
               </Box>
               <Box width='auto' margin='20px'>
                 Password 
                 <Flex>
                   <Input defaultValue={info.password} marginRight='5px'/>
-                  <Button size='md'onClick={decrypt}>de-crypt</Button>
                 </Flex>
               </Box>
               <Box width='auto' margin='20px'>
@@ -104,7 +142,17 @@ const Home = ({ data }: any) => {
             </ModalBody>
 
             <ModalFooter alignContent='center'>
-              <Button colorScheme='red' mr={3} onClick={() => setOpen(!open)}>
+              <Button 
+                bg='red.500'
+                color='black'
+                mr={3}
+                sx={{
+                  '&:hover': {
+                    bg: 'red.600'
+                  }
+                }}
+                onClick={() => setOpen(!open)}
+              >
                 Close
               </Button>
             </ModalFooter>
@@ -127,7 +175,21 @@ const Home = ({ data }: any) => {
               Add
             </Button>
           </Link>
-        <Input placeholder='Search Passwords' width='500px'></Input>
+        {/* <Input placeholder='Search Passwords' width='500px'></Input> */}
+        <Button
+          colorScheme='green'
+          size='md'
+          onClick={decrypt}
+        >
+          De-Crypt
+        </Button>
+        <Button
+          colorScheme='pink'
+          size='md'
+          onClick={encrypt}
+        >
+          En-Crypt
+        </Button>
       </Flex>
 
       <Table variant='unstyled'>
@@ -150,14 +212,39 @@ const Home = ({ data }: any) => {
                 <Td>{val.encryptedPassword}</Td>
                 <Td>{val.websiteURL}</Td>
                 <Td>
-                  <Button 
-                    onClick={() => {
-                      handleClick(val.id)
-                    }}
-                    colorScheme='blue'
+                  <Flex alignItems='row-reverse'>
+                    <Button 
+                      marginLeft='5px'
+                      onClick={() => {
+                        handleClick(val.id)
+                      }}
+                      colorScheme='blue'
+                      rightIcon={<ViewIcon />}
+                      >
+                      View
+                    </Button>
+                    <Button
+                      marginLeft='5px'
+                      marginRight='5px'
+                      onClick={() => {
+                        editRow(val.id)
+                      }}
+                      colorScheme='orange'
+                      rightIcon={<EditIcon />}
+                      >
+                    </Button>
+                    <Button
+                      marginLeft='5px'
+                      marginRight='5px'
+                      onClick={() => {
+                        deleteRow(val.id)
+                      }}
+                      colorScheme='red'
+                      rightIcon={<DeleteIcon />}
                     >
-                      view
-                  </Button>
+                      Delete
+                    </Button>
+                  </Flex>
                 </Td>
               </Tr>
             ))
@@ -169,8 +256,26 @@ const Home = ({ data }: any) => {
   )
 }
 
-export const getStaticProps =  async () => {
-  const data = await prisma.userInfo.findMany({})
+export const getServerSideProps =  async ({ req }: any) => {
+
+  let user
+
+  try { 
+    user = validateToken(req.cookies.PASS)
+  } catch(e) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/signin',
+      }
+    }
+  }
+
+  const data = await prisma.userInfo.findMany({
+    where: {
+      userId: user.id,
+    }
+  })
 
   return {
     props: {data},

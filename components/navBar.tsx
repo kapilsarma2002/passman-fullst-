@@ -16,6 +16,7 @@ import {
   useColorMode,
   Center,
 } from '@chakra-ui/react';
+import NextImage from 'next/image'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Router from 'next/router';
 
@@ -46,7 +47,9 @@ export default function Nav() {
       <Box height='100%' bg={useColorModeValue('gray.100', 'gray.900')} 
            color={useColorModeValue('black', 'white')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box onClick={redirectHome}>Logo</Box>
+          <Box onClick={redirectHome}>
+            <NextImage src="/lock.svg" height={50} width={50}  />
+          </Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>

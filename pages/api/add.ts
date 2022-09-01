@@ -2,15 +2,16 @@ import { validateRoute } from "../../lib/auth"
 import { useState } from 'react'
 import prisma from "../../lib/prisma"
 import process from "process"
-import CryptoJS from "crypto-js"
+import CryptoAES from 'crypto-js/aes';
 
 export default validateRoute(async (req: any, res: any, user: any) => {
 
   const { username, usermail, password, url } = req.body
   const id = user.userId
-  const { REACT_APP_SUPER_KEY } = process.env;
+  const { REACT_APP_SUPER_KEY } = process.env;  
   const key = REACT_APP_SUPER_KEY as string
-  const encryptedPass = CryptoJS.AES.encrypt(password, key).toString()
+  // const key = 'MySuPeRsEcReTpASsWoRd'
+  const encryptedPass = CryptoAES.encrypt(password, key).toString()
 
   try {
 
@@ -25,7 +26,7 @@ export default validateRoute(async (req: any, res: any, user: any) => {
     })
   
     res.json('successfully added!')
-    
+
   } catch(e) {
     res.status(402)
     res.json('password encryption error')
