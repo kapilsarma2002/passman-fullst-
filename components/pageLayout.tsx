@@ -14,7 +14,7 @@ const PageLayout = ({ children }: any) => {
 
       {/* main page */}
       <Box 
-        height='calc(100vh - 65px)' paddingY='80px' paddingX='150px' 
+        height='calc(100vh - 65px)' paddingY='60px' paddingX='40px' 
         borderRadius='30px'
       >
         <Flex 

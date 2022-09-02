@@ -34,6 +34,8 @@ const Home = ({ data }: any) => {
   const [index, setIndex] = useState(1)
   const [open, setOpen] = useState(false)
   const [info, setInfo] = useState({})
+  const [encrypted, setEncrypted] = useState(false)
+  const [decrypted, setDecrypted] = useState(true)
   const key = 'MySuPeRsEcReTpASsWoRd'
   
   const handleClick = (idx: any) => {
@@ -64,6 +66,8 @@ const Home = ({ data }: any) => {
 
   const decrypt = () => {
 
+    if(!decrypted) return
+
     // const { REACT_APP_SUPER_KEY } = process.env
     // console.log(REACT_APP_SUPER_KEY)
     // const key = REACT_APP_SUPER_KEY as string
@@ -79,10 +83,14 @@ const Home = ({ data }: any) => {
     })
 
     setIndex(0)
+    setEncrypted(true)
+    setDecrypted(false)
 
   }
 
   const encrypt = () => {
+
+    if(!encrypted) return
 
     let encryptedPass: string
     let pass: string
@@ -94,16 +102,12 @@ const Home = ({ data }: any) => {
     })
 
     setIndex(-1)
+    setEncrypted(false)
+    setDecrypted(true)
   }
 
   const editRow = async (idx: any) => {
-    // let user = await prisma.userInfo.findFirst({
-    //   where: {
-    //     id: idx,
-    //   }
-    // })
-
-    // console.log(user)
+    
   }
 
   const deleteRow = (idx: any) => {
@@ -176,20 +180,23 @@ const Home = ({ data }: any) => {
             </Button>
           </Link>
         {/* <Input placeholder='Search Passwords' width='500px'></Input> */}
-        <Button
-          colorScheme='green'
-          size='md'
-          onClick={decrypt}
-        >
-          De-Crypt
-        </Button>
-        <Button
-          colorScheme='pink'
-          size='md'
-          onClick={encrypt}
-        >
-          En-Crypt
-        </Button>
+        <Box>
+          <Button
+            marginRight='5px'
+            colorScheme='green'
+            size='md'
+            onClick={decrypt}
+            >
+            De-Crypt
+          </Button>
+          <Button
+            colorScheme='pink'
+            size='md'
+            onClick={encrypt}
+            >
+            En-Crypt
+          </Button>
+          </Box>
       </Flex>
 
       <Table variant='unstyled'>
@@ -223,16 +230,18 @@ const Home = ({ data }: any) => {
                       >
                       View
                     </Button>
-                    <Button
-                      marginLeft='5px'
-                      marginRight='5px'
-                      onClick={() => {
-                        editRow(val.id)
-                      }}
-                      colorScheme='orange'
-                      rightIcon={<EditIcon />}
-                      >
-                    </Button>
+                    <Link href={`/edit/${val.id}`}>
+                      <Button
+                        marginLeft='5px'
+                        onClick={() => {
+                          editRow(val.id)
+                        }}
+                        colorScheme='orange'
+                        rightIcon={<EditIcon />}
+                        >
+                          Edit
+                      </Button>
+                    </Link>
                     <Button
                       marginLeft='5px'
                       marginRight='5px'
