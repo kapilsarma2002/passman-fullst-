@@ -17,7 +17,8 @@ const Edit = () => {
 
     if(password1 !== password2) {
       alert('Passwords do not match!')
-      return
+      setIsLoading(false)
+      router.push(`/edit/${id}`)
     }
     
     await editAuth('edit', {id, password1, password2})

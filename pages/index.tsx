@@ -17,15 +17,23 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  propNames,
 } from '@chakra-ui/react'
-import { AddIcon, DeleteIcon, ViewIcon, EditIcon } from '@chakra-ui/icons'
+import { 
+  AddIcon, 
+  DeleteIcon, 
+  ViewIcon, 
+  EditIcon, 
+  CheckIcon,
+  CloseIcon
+} from '@chakra-ui/icons'
 import CryptoAES from 'crypto-js/aes';
 import CryptoENC from 'crypto-js/enc-utf8';
 import { useEffect, useState } from 'react'
 import prisma from '../lib/prisma'
 import process from 'process'
 import { validateToken } from '../lib/auth'
+import { editAuth } from '../lib/mutations';
+import Router from 'next/router';
 
 
 const Home = ({ data }: any) => {
@@ -33,9 +41,11 @@ const Home = ({ data }: any) => {
   const { onClose } = useDisclosure()
   const [index, setIndex] = useState(1)
   const [open, setOpen] = useState(false)
+  const [delModal, setDelModal] = useState(false)
   const [info, setInfo] = useState({})
   const [encrypted, setEncrypted] = useState(false)
   const [decrypted, setDecrypted] = useState(true)
+  let id: number
   const key = 'MySuPeRsEcReTpASsWoRd'
   
   const handleClick = (idx: any) => {
@@ -106,12 +116,16 @@ const Home = ({ data }: any) => {
     setDecrypted(true)
   }
 
-  const editRow = async (idx: any) => {
-    
+  const deleteRow = (idx: number) => {
+    setDelModal(true)
+    setIndex(idx)
   }
 
-  const deleteRow = (idx: any) => {
-
+  const handleDelete = async () => {
+    id = index
+    await editAuth('delete', { id })
+    setDelModal(false)
+    Router.push('/')
   }
 
   return (
@@ -161,6 +175,34 @@ const Home = ({ data }: any) => {
               </Button>
             </ModalFooter>
           </ModalContent>
+        </Modal>
+
+        <Modal isOpen={delModal} onClose={onClose} isCentered>
+        <ModalOverlay />
+          <ModalContent bg='gray.900'>
+            <ModalHeader>Are you sure you want to delete this Website?</ModalHeader>
+            <ModalCloseButton onClick={() => setOpen(!open)} />
+            <ModalBody color={'white'}>
+              <Flex justify='space-around'>
+                <Button
+                  colorScheme='green'
+                  rightIcon={<CheckIcon />}
+                  onClick={handleDelete}
+                >
+                  Yes
+                </Button>
+
+                <Button
+                  colorScheme='red'
+                  rightIcon={<CloseIcon />}
+                  onClick={() => setDelModal(false)}
+                >
+                  No
+                </Button>
+              </Flex>
+            </ModalBody>
+          </ModalContent>
+        
         </Modal>
 
       <Flex align='center' justify='space-evenly' padding='20px'>
@@ -232,10 +274,7 @@ const Home = ({ data }: any) => {
                     </Button>
                     <Link href={`/edit/${val.id}`}>
                       <Button
-                        marginLeft='5px'
-                        onClick={() => {
-                          editRow(val.id)
-                        }}
+                        marginLeft='5px'                    
                         colorScheme='orange'
                         rightIcon={<EditIcon />}
                         >
